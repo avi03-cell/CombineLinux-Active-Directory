@@ -855,144 +855,180 @@ resource "aws_security_group" "ad_sg" {
 
   vpc_id = aws_vpc.main.id
 
- ingress {
 
-description = "Linux to AD"
+  # Linux to AD
+  ingress {
 
-from_port = 0
+    description = "Linux to AD"
 
-to_port = 65535
+    from_port = 0
+    to_port = 65535
+    protocol = "tcp"
 
-protocol = "tcp"
-
-security_groups=[
- aws_security_group.ec2_sg.id
-]
-
-}
-
-ingress {
-
-description = "Linux to AD DNS UDP"
-
-from_port = 53
-
-to_port = 53
-
-protocol = "udp"
-
-security_groups = [
- aws_security_group.ec2_sg.id
-]
-
-}
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
+  }
 
 
-  #########################################################
-  # RDP From Admin Machine
-  #########################################################
+  # RDP from Bastion
 
- ingress {
-  description = "RDP from Bastion"
+  ingress {
 
-  from_port = 3389
-  to_port   = 3389
-  protocol  = "tcp"
+    description = "RDP from Bastion"
 
-  security_groups = [
-    aws_security_group.bastion_sg.id
-  ]
-}
+    from_port = 3389
+    to_port   = 3389
+    protocol  = "tcp"
 
-
-  #########################################################
-  # AD Communication Between DC and Client
-  #########################################################
-
-ingress {
-
-  description = "Active Directory Internal Traffic"
-
-  from_port = 0
-
-  to_port = 0
-
-  protocol = "-1"
-
-  self = true
-
-}
+    security_groups = [
+      aws_security_group.bastion_sg.id
+    ]
+  }
 
 
-  #########################################################
+  # LDAP
+
+  ingress {
+
+    description = "LDAP"
+
+    from_port = 389
+    to_port   = 389
+    protocol = "tcp"
+
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
+  }
+
+
+  # LDAPS
+
+  ingress {
+
+    description = "LDAPS"
+
+    from_port = 636
+    to_port = 636
+    protocol = "tcp"
+
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
+  }
+
+
+  # Kerberos TCP
+
+  ingress {
+
+    description = "Kerberos TCP"
+
+    from_port = 88
+    to_port = 88
+    protocol = "tcp"
+
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
+  }
+
+
+  # Kerberos UDP
+
+  ingress {
+
+    description = "Kerberos UDP"
+
+    from_port = 88
+    to_port = 88
+    protocol = "udp"
+
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
+  }
+
+
   # DNS TCP
-  #########################################################
 
   ingress {
 
     description = "DNS TCP"
 
     from_port = 53
-
     to_port = 53
-
     protocol = "tcp"
 
-    self = true
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
   }
 
 
-  #########################################################
   # DNS UDP
-  #########################################################
 
   ingress {
 
     description = "DNS UDP"
 
     from_port = 53
-
     to_port = 53
-
     protocol = "udp"
 
-    self = true
-  }
-
-
-
-  #########################################################
-  # Outbound
-  #########################################################
-
-  egress {
-
-    from_port = 0
-
-    to_port = 0
-
-    protocol = "-1"
-
-
-    cidr_blocks = [
-
-      "0.0.0.0/0"
-
+    security_groups = [
+      aws_security_group.ec2_sg.id
     ]
   }
 
 
-  tags = merge(
+  # SMB
 
-    local.common_tags,
+  ingress {
 
-    {
+    description = "SMB"
 
-      Name="${var.project_name}-ad-sg"
+    from_port = 445
+    to_port = 445
+    protocol = "tcp"
 
-    }
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
+  }
 
-  )
+
+  # Global Catalog
+
+  ingress {
+
+    description = "Global Catalog"
+
+    from_port = 3268
+    to_port = 3268
+    protocol = "tcp"
+
+    security_groups = [
+      aws_security_group.ec2_sg.id
+    ]
+  }
+
+
+  # Outbound
+
+  egress {
+
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+
+  }
+
 
 }
 ###########################################################
@@ -1275,122 +1311,3 @@ resource "aws_instance" "bastion" {
   }
 }
 
-#########################################################
-# LDAP
-#########################################################
-
-ingress {
-  description = "LDAP"
-
-  from_port = 389
-  to_port   = 389
-  protocol  = "tcp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
-
-#########################################################
-# LDAPS
-#########################################################
-
-ingress {
-  description = "LDAPS"
-
-  from_port = 636
-  to_port   = 636
-  protocol  = "tcp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
-
-#########################################################
-# Kerberos
-#########################################################
-
-ingress {
-  description = "Kerberos TCP"
-
-  from_port = 88
-  to_port   = 88
-  protocol  = "tcp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
-
-ingress {
-  description = "Kerberos UDP"
-
-  from_port = 88
-  to_port   = 88
-  protocol  = "udp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
-
-#########################################################
-# DNS
-#########################################################
-
-ingress {
-  description = "DNS TCP"
-
-  from_port = 53
-  to_port   = 53
-  protocol  = "tcp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
-
-ingress {
-  description = "DNS UDP"
-
-  from_port = 53
-  to_port   = 53
-  protocol  = "udp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
-
-#########################################################
-# SMB
-#########################################################
-
-ingress {
-  description = "SMB"
-
-  from_port = 445
-  to_port   = 445
-  protocol  = "tcp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
-
-#########################################################
-# Global Catalog
-#########################################################
-
-ingress {
-  description = "Global Catalog"
-
-  from_port = 3268
-  to_port   = 3268
-  protocol  = "tcp"
-
-  security_groups = [
-    aws_security_group.ec2_sg.id
-  ]
-}
