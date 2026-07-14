@@ -1,30 +1,144 @@
-aws_region = "ap-south-1"
+###########################################################
+# AWS Configuration
+###########################################################
+
+aws_region = "us-east-1"
+
+availability_zone = "us-east-1a"
+
+
+###########################################################
+# Project
+###########################################################
 
 project_name = "Active-Directory"
 
-availability_zone = "ap-south-1a"
+environment = "dev"
+
+
+###########################################################
+# Networking
+###########################################################
 
 vpc_cidr = "10.0.0.0/16"
 
-public_subnet_cidr = "10.0.1.0/24"
 
-private_subnet_cidr = "10.0.11.0/24"
+# Public Subnets
 
-allowed_rdp_cidr = [
-  "223.181.22.162/32",
-  "192.48.82.228/32"
-]
+public_subnet_1_cidr = "10.0.1.0/24"
+
+public_subnet_2_cidr = "10.0.2.0/24"
+
+
+# Private Subnets
+
+private_subnet_1_cidr = "10.0.11.0/24"
+
+private_subnet_2_cidr = "10.0.12.0/24"
+
+
+
+###########################################################
+# Linux EC2
+###########################################################
+
+ami_id = "ami-0f918f7e67a3323f0" 
+
+instance_type = "t3.micro"
+
+
+
+###########################################################
+# Key Pair
+###########################################################
 
 key_pair_name = "Active Directory-Keypair"
 
-windows_server_ami = "ami-05fdee25803e36cbc"
 
-windows_client_ami = "ami-05fdee25803e36cbc"
 
 ###########################################################
-# Bastion Host
+# SSH Access
 ###########################################################
 
-bastion_ami           = "ami-05fdee25803e36cbc"
-bastion_instance_type = "t3.medium"
+allowed_ssh_cidr = [
+  "223.181.22.162/32"
+]
 
+
+
+###########################################################
+# RDP Access to Bastion
+###########################################################
+
+allowed_rdp_cidr = [
+
+  "223.181.22.162/32",
+  "192.48.82.228/32",
+  "192.48.82.229/32"
+
+]
+
+
+
+###########################################################
+# Windows AMI
+###########################################################
+
+windows_server_ami = "ami-09639480113b0df96"
+
+windows_client_ami = "ami-09639480113b0df96"
+
+
+
+###########################################################
+# Bastion
+###########################################################
+
+bastion_ami = "ami-05fdee25803e36cbc"
+
+bastion_instance_type = "t3.micro"
+
+
+
+###########################################################
+# PostgreSQL
+###########################################################
+
+postgres_db = "company"
+
+postgres_user = "demo"
+
+postgres_password = "Admin@123456"
+
+
+
+###########################################################
+# Website
+###########################################################
+
+website_title = "AWS Terraform Demo"
+
+website_heading = "Welcome to My AWS Terraform Project"
+
+
+
+###########################################################
+# Tags
+###########################################################
+
+owner = "Avneet Singh"
+
+cost_center = "DevOps"
+
+
+tags = {
+
+  Application = "Nginx"
+
+  Database = "PostgreSQL"
+
+  ManagedBy = "Terraform"
+
+  Environment = "Development"
+
+}
