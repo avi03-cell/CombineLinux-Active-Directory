@@ -27,17 +27,21 @@ systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
 # Install Packages
 ##########################################################
 
-apt-get install -y \
-    realmd \
-    sssd \
-    sssd-tools \
-    libnss-sss \
-    libpam-sss \
-    adcli \
-    krb5-user \
-    samba-common-bin \
-    packagekit \
-    ldap-utils
+sudo apt update
+
+sudo apt install -y \
+realmd \
+sssd \
+sssd-tools \
+libnss-sss \
+libpam-sss \
+adcli \
+samba-common-bin \
+oddjob \
+oddjob-mkhomedir \
+packagekit \
+krb5-user \
+ldap-utils 
 
 ##########################################################
 # Enable Services
