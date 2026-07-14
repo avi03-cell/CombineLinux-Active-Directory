@@ -42,7 +42,7 @@ private_subnet_2_cidr = "10.0.12.0/24"
 # Linux EC2
 ###########################################################
 
-ami_id = "ami-0f918f7e67a3323f0" 
+ami_id = "ami_id = "ami-01edba92f9036f76e" 
 
 instance_type = "t3.micro"
 
