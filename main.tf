@@ -856,6 +856,25 @@ resource "aws_security_group" "ad_sg" {
   vpc_id = aws_vpc.main.id
 
 
+  #####################################################
+  # Allow all internal VPC traffic
+  #####################################################
+
+  ingress {
+
+    description = "Allow all internal VPC traffic"
+
+    from_port = 0
+    to_port   = 0
+    protocol = "-1"
+
+    cidr_blocks = [
+      "10.0.0.0/16"
+    ]
+  }
+
+
+
   # Linux to AD
   ingress {
 
@@ -949,6 +968,20 @@ resource "aws_security_group" "ad_sg" {
       aws_security_group.ec2_sg.id
     ]
   }
+
+
+  ingress {
+  description = "SSH from Bastion"
+
+  from_port = 22
+  to_port   = 22
+
+  protocol = "tcp"
+
+  security_groups = [
+    aws_security_group.bastion_sg.id
+  ]
+}
 
 
   # DNS TCP
